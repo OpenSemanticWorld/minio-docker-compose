@@ -1,0 +1,22 @@
+# this files shows how to use caddy as a reverse proxy
+# requires https://github.com/lucaslorentz/caddy-docker-proxy
+# and a existing docker network 'caddy'
+
+version: '3.8'
+services:
+    minio:
+        networks:
+            - default
+            - caddy
+        labels:
+            caddy_01: ${MINIO_API_SERVER}
+            caddy_01.reverse_proxy: "{{upstreams 9000}}"
+            caddy_01.request_body: 2g
+            caddy_02: ${MINIO_UI_SERVER}
+            caddy_02.reverse_proxy: "{{upstreams 9001}}"
+            caddy_02.request_body: 2g
+  
+networks:
+  # Add caddy as an external network.
+  caddy:
+    external: true
